@@ -1,6 +1,6 @@
 @Library("shared libraries") _
 pipeline {
-    agent { label 'ec2-agent' }
+    agent { label 'any' }
 
     stages {
         
