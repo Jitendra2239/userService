@@ -3,24 +3,24 @@ pipeline {
     agent any
 
     stages {
-        
+
         stage('Checkout') {
             steps {
                 script {
-                    clone("https://github.com/Jitendra2239/userService.git","main")
+                    clone("https://github.com/Jitendra2239/paymentservice.git","master")
                 }
             }
         }
 
         stage('Build') {
             steps {
-                sh './mvnw clean package -DskipTests'
+                sh './gradlew clean build -x test'
             }
         }
 
         stage('Test') {
-            steps { 
-                sh './mvnw test'
+            steps {
+                sh './gradlew test'
             }
         }
 
@@ -32,23 +32,26 @@ pipeline {
                 }
             }
         }
+
         stage('Dockerhub push') {
             steps {
                 script {
                     echo "pushing image to dockerhub...."
                     withCredentials([usernamePassword(
-                        credentialsId: 'dockerhub',
-                        usernameVariable: 'USERNAME',
-                        passwordVariable: 'PASSWORD')]) {
-                    sh "docker login -u ${env.USERNAME} -p${env.PASSWORD}"
-                    sh "docker image tag productservice:latest nlog10n/productservice:latest"
-                    sh "docker push nlog10n/productservice:latest"
+                            credentialsId: 'dockerhub',
+                            usernameVariable: 'USERNAME',
+                            passwordVariable: 'PASSWORD')]) {
+
+                        sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD}"
+                        sh "docker tag productservice:latest nlog10n/productservice:latest"
+                        sh "docker push nlog10n/productservice:latest"
                     }
                 }
             }
         }
-        stage('Deploy') { 
-            steps { 
+
+        stage('Deploy') {
+            steps {
                 echo 'Deploying application...'
                 sh "docker run -d -p 8080:8080 productservice:latest"
             }
