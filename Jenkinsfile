@@ -7,7 +7,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    clone("https://github.com/Jitendra2239/paymentservice.git","master")
+                    clone("git@github.com:Jitendra2239/userService.git","master")
                 }
             }
         }
