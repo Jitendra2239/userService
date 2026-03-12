@@ -7,14 +7,13 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    clone("https://github.com/Jitendra2239/userService.git","master")
+                    clone("https://github.com/Jitendra2239/userService-.git","main")
                 }
             }
         }
 
         stage('Build') {
             steps {
-
                 sh './gradlew clean build -x test'
             }
         }
@@ -37,14 +36,14 @@ pipeline {
         stage('Dockerhub push') {
             steps {
                 script {
-                    echo "pushing image to dockerhub...."
+                    echo "Pushing image to DockerHub..."
                     withCredentials([usernamePassword(
                             credentialsId: 'dockerhub',
                             usernameVariable: 'USERNAME',
                             passwordVariable: 'PASSWORD')]) {
 
                         sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD}"
-                        sh "docker tag productservice:latest nlog10n/productservice:latest"
+                        sh "docker image tag productservice:latest nlog10n/productservice:latest"
                         sh "docker push nlog10n/productservice:latest"
                     }
                 }
