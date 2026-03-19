@@ -1,23 +1,27 @@
 package com.jitendra.userservice.service;
 
+import com.jitendra.event.UserCreatedEvent;
+import com.jitendra.event.UserUpdatedEvent;
 import com.jitendra.userservice.exception.ResourceNotFoundException;
 import com.jitendra.userservice.exception.UserAlreadyExistsException;
+import com.jitendra.userservice.model.Address;
 import com.jitendra.userservice.model.Users;
+import com.jitendra.userservice.model.Role;
 import com.jitendra.userservice.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-
+import java.util.UUID;
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
-
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+
 
     @Override
     public Users createUser(Users user) {
@@ -26,7 +30,11 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException("User already exists with email: " + user.getEmail());
         }
 
-        return userRepository.save(user);
+        Users users= userRepository.save(user);
+        UserCreatedEvent event = buildUserCreatedEvent(user);
+
+        kafkaTemplate.send("user-created", user.getId().toString(), event);
+        return users;
     }
 
     @Override
@@ -71,7 +79,11 @@ public class UserServiceImpl implements UserService {
         existingUser.setPhone(user.getPhone());
         existingUser.setStatus(user.getStatus());
 
-        return userRepository.save(existingUser);
+        Users users= userRepository.save(existingUser);
+        UserUpdatedEvent event = buildUserUpdatedEvent(user);
+
+        kafkaTemplate.send("user-updated", user.getId().toString(), event);
+        return users;
     }
 
     @Override
@@ -82,5 +94,78 @@ public class UserServiceImpl implements UserService {
                         new ResourceNotFoundException("User not found with id: " + id));
 
         userRepository.delete(user);
+    }
+
+    private UserCreatedEvent buildUserCreatedEvent(Users user) {
+
+        UserCreatedEvent event = new UserCreatedEvent();
+
+        event.setUserId(user.getId());
+        event.setName(user.getName());
+        event.setEmail(user.getEmail());
+
+        // Default Address
+        Address defaultAddress = getDefaultAddress(user);
+
+        if (defaultAddress != null) {
+            event.setAddressLine(defaultAddress.getStreet());
+            event.setCity(defaultAddress.getCity());
+            event.setState(defaultAddress.getState());
+            event.setPincode(defaultAddress.getPincode());
+        }
+
+        // Roles
+        event.setRoles(
+                user.getRoles()
+                        .stream()
+                        .map(Role::getRoleName)
+                        .toList()
+        );
+
+        // Metadata
+        event.setEventId(UUID.randomUUID().toString());
+        event.setVersion(1L);
+        event.setTimestamp(System.currentTimeMillis());
+
+        return event;
+    }
+
+    private UserUpdatedEvent buildUserUpdatedEvent(Users user) {
+
+        UserUpdatedEvent event = new UserUpdatedEvent();
+
+        event.setUserId(user.getId());
+        event.setName(user.getName());
+        event.setEmail(user.getEmail());
+
+        Address defaultAddress = getDefaultAddress(user);
+
+        if (defaultAddress != null) {
+            event.setAddressLine(defaultAddress.getStreet());
+            event.setCity(defaultAddress.getCity());
+            event.setState(defaultAddress.getState());
+            event.setPincode(defaultAddress.getPincode());
+        }
+
+        event.setRoles(
+                user.getRoles()
+                        .stream()
+                        .map(Role::getRoleName)
+                        .toList()
+        );
+
+        event.setEventId(UUID.randomUUID().toString());
+        event.setVersion(1l); // IMPORTANT
+        event.setTimestamp(System.currentTimeMillis());
+
+        return event;
+    }
+
+    private Address getDefaultAddress(Users user) {
+        return user.getAddresses()
+                .stream()
+                .filter(Address::getIsDefault)
+                .findFirst()
+                .orElse(null);
     }
 }

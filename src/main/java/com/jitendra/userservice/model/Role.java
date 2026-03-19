@@ -1,8 +1,10 @@
 package com.jitendra.userservice.model;
 
 import jakarta.persistence.*;
-import java.util.Set;
+import lombok.Data;
 
+import java.util.Set;
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {

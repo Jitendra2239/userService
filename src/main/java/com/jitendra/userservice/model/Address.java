@@ -1,7 +1,9 @@
 package com.jitendra.userservice.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "addresses")
 public class Address {
