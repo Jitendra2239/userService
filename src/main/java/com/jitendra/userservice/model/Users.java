@@ -1,15 +1,19 @@
 package com.jitendra.userservice.model;
 
-
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
+@ToString(exclude = {"roles", "addresses"})
+@EqualsAndHashCode(exclude = {"roles", "addresses"})
 public class Users {
 
     @Id
@@ -42,8 +46,8 @@ public class Users {
     )
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Address> addresses;
-
-    // getters and setters
 }

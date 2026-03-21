@@ -1,14 +1,15 @@
 package com.jitendra.userservice.service;
 
+import com.jitendra.userservice.dto.AddressDto;
 import com.jitendra.userservice.model.Address;
 
 import java.util.List;
 
 public interface AddressService {
 
-    Address addAddress(Address address);
+    public AddressDto addAddress(Long userId, AddressDto dto);
 
-    List<Address> getUserAddresses(Long userId);
-
+    List<AddressDto> getUserAddresses(Long userId);
+    public AddressDto getDefaultAddress(Long userId);
     void deleteAddress(Long id);
 }

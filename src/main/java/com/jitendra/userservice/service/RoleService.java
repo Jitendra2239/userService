@@ -1,12 +1,14 @@
 package com.jitendra.userservice.service;
 
+import com.jitendra.userservice.dto.RoleDto;
 import com.jitendra.userservice.model.Role;
 
 import java.util.List;
 
 public interface RoleService {
 
-    Role createRole(Role role);
+    public RoleDto createRole(RoleDto dto);
 
-    List<Role> getAllRoles();
+    public RoleDto getRoleById(Long id);
+    List<RoleDto> getAllRoles();
 }

@@ -1,21 +1,23 @@
 package com.jitendra.userservice.service;
 
+
+
+import com.jitendra.userservice.dto.UserRequestDto;
+import com.jitendra.userservice.dto.UserResponseDto;
 import com.jitendra.userservice.model.Users;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
-    Users createUser(Users user);
+    public UserResponseDto createUser(UserRequestDto dto);
 
-    Optional<Users> getUserById(Long id);
+    public UserResponseDto getUserById(Long id) ;
 
-    Optional<Users> getUserByEmail(String email);
+    public List<UserResponseDto> getAllUsers() ;
 
-    List<Users> getAllUsers();
+    public UserResponseDto updateUser(Long id, UserRequestDto dto) ;
 
-    Users updateUser(Long id, Users user);
-
-    void deleteUser(Long id);
+    public UserResponseDto assignRole(Long userId, String roleName);
+    public void deleteUser(Long id);
 }
