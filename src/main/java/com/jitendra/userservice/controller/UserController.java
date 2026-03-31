@@ -1,5 +1,6 @@
 package com.jitendra.userservice.controller;
 
+import com.jitendra.userservice.dto.UserDto;
 import com.jitendra.userservice.dto.UserRequestDto;
 import com.jitendra.userservice.dto.UserResponseDto;
 import com.jitendra.userservice.service.UserService;
@@ -19,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto) {
         UserResponseDto response = userService.createUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -56,5 +57,9 @@ public class UserController {
     public ResponseEntity<UserResponseDto> assignRole(@PathVariable Long userId,
                                                       @RequestParam String roleName) {
         return ResponseEntity.ok(userService.assignRole(userId, roleName));
+    }
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(userService.findByEmail(email));
     }
 }

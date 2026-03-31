@@ -1,5 +1,6 @@
 package com.jitendra.userservice.repository;
 
+import com.jitendra.userservice.dto.UserDto;
 import com.jitendra.userservice.model.UserStatus;
 import com.jitendra.userservice.model.Users;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,9 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<Users, Long> {
 
-    Optional<Users> findByEmail(String email);
+    @Query(value = "SELECT id, name, email FROM users WHERE email = :email",
+            nativeQuery = true)
+    Optional<UserDto> findByEmail(String email);
 
     boolean existsByEmail(String email);
 
@@ -33,4 +36,5 @@ public interface UserRepository extends JpaRepository<Users, Long> {
             "LEFT JOIN FETCH u.roles " +
             "LEFT JOIN FETCH u.addresses")
     List<Users> findAllWithDetails();
+
 }

@@ -3,6 +3,7 @@ package com.jitendra.userservice.service;
 
 import com.jitendra.event.UserCreatedEvent;
 import com.jitendra.event.UserUpdatedEvent;
+import com.jitendra.userservice.dto.UserDto;
 import com.jitendra.userservice.dto.UserMapper;
 import com.jitendra.userservice.dto.UserRequestDto;
 import com.jitendra.userservice.dto.UserResponseDto;
@@ -120,6 +121,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public UserDto findByEmail(String email) {
+       return userRepository.findByEmail(email).orElseThrow(()->new org.apache.kafka.common.errors.ResourceNotFoundException("User Not found with email"+ email));
+
+    }
+
 
     @Override
     public UserResponseDto assignRole(Long userId, String roleName) {
@@ -146,22 +153,22 @@ public class UserServiceImpl implements UserService {
         event.setEmail(user.getEmail());
         event.setPhone(user.getPhone());
         // Default Address
-//        Address defaultAddress = getDefaultAddress(user);
-//
-//        if (defaultAddress != null) {
-//            event.setAddressLine(defaultAddress.getStreet());
-//            event.setCity(defaultAddress.getCity());
-//            event.setState(defaultAddress.getState());
-//            event.setPincode(defaultAddress.getPincode());
-//        }
-//
-//        // Roles
-//        event.setRoles(
-//                user.getRoles()
-//                        .stream()
-//                        .map(Role::getRoleName)
-//                        .toList()
-//        );
+        Address defaultAddress = getDefaultAddress(user);
+
+        if (defaultAddress != null) {
+            event.setAddressLine(defaultAddress.getStreet());
+            event.setCity(defaultAddress.getCity());
+            event.setState(defaultAddress.getState());
+            event.setPincode(defaultAddress.getPincode());
+        }
+
+        // Roles
+        event.setRoles(
+                user.getRoles()
+                        .stream()
+                        .map(Role::getRoleName)
+                        .toList()
+        );
 
         // Metadata
         event.setEventId(UUID.randomUUID().toString());
@@ -203,10 +210,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private Address getDefaultAddress(Users user) {
+           if (user.getAddresses()==null)return null;
         return user.getAddresses()
                 .stream()
                 .filter(Address::getIsDefault)
-                .findFirst()
-                .orElse(null);
+                .findFirst().orElse(null);
+
     }
 }

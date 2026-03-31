@@ -2,24 +2,27 @@ package com.jitendra.userservice.service;
 
 import com.jitendra.userservice.model.Role;
 import com.jitendra.userservice.repository.RoleRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataInitializer implements CommandLineRunner {
+public class DataInitializer {
 
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    public DataInitializer(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    @Override
-    public void run(String... args) {
-        if (roleRepository.findByRoleName("USER").isEmpty()) {
-            Role userRole = new Role();
-            userRole.setRoleName("USER");
-            roleRepository.save(userRole);
+    @PostConstruct
+    public void init() {
+        try {
+            if (roleRepository.count() == 0) {
+                Role role = new Role();
+                role.setRoleName("USER");
+                roleRepository.save(role);
+            }
+        } catch (Exception e) {
+            System.out.println("DB not ready yet");
         }
     }
 }
