@@ -48,7 +48,7 @@ public class AddressServiceImpl implements AddressService {
         Address saved = addressRepository.save(address);
 
         return AddressDto.builder()
-                .id(saved.getId())
+
                 .street(saved.getStreet())
                 .city(saved.getCity())
                 .state(saved.getState())
@@ -68,7 +68,7 @@ public class AddressServiceImpl implements AddressService {
         return addressRepository.findByUserId(userId)
                 .stream()
                 .map(addr -> AddressDto.builder()
-                        .id(addr.getId())
+
                         .street(addr.getStreet())
                         .city(addr.getCity())
                         .state(addr.getState())
@@ -86,7 +86,7 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new ResourceNotFoundException("Default address not found"));
 
         return AddressDto.builder()
-                .id(address.getId())
+
                 .city(address.getCity())
                 .isDefault(address.getIsDefault())
                 .build();

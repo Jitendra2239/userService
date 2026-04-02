@@ -20,6 +20,9 @@ public class DataInitializer {
                 Role role = new Role();
                 role.setRoleName("USER");
                 roleRepository.save(role);
+                Role role1 = new Role();
+                role1.setRoleName("ADMIN");
+                roleRepository.save(role1);
             }
         } catch (Exception e) {
             System.out.println("DB not ready yet");

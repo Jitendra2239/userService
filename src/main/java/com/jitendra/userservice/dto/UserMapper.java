@@ -53,7 +53,7 @@ public class UserMapper {
         return roles.stream()
                 .filter(Objects::nonNull)
                 .map(role -> RoleDto.builder()
-                        .id(role.getId())
+
                         .roleName(role.getRoleName())
                         .build())
                 .collect(Collectors.toSet());
@@ -69,7 +69,7 @@ public class UserMapper {
         return addresses.stream()
                 .filter(Objects::nonNull)
                 .map(addr -> AddressDto.builder()
-                        .id(addr.getId())
+
                         .street(addr.getStreet())
                         .city(addr.getCity())
                         .state(addr.getState())

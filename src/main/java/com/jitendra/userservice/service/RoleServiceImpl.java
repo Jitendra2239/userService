@@ -33,7 +33,7 @@ public class RoleServiceImpl implements RoleService {
         Role saved = roleRepository.save(role);
 
         return RoleDto.builder()
-                .id(saved.getId())
+
                 .roleName(saved.getRoleName())
                 .build();
     }
@@ -45,7 +45,7 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + id));
 
         return RoleDto.builder()
-                .id(role.getId())
+
                 .roleName(role.getRoleName())
                 .build();
     }
@@ -56,7 +56,7 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findAll()
                 .stream()
                 .map(role -> RoleDto.builder()
-                        .id(role.getId())
+
                         .roleName(role.getRoleName())
                         .build())
                 .toList();
