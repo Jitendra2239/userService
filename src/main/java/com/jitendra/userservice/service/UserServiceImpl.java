@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-   private BCryptPasswordEncoder bCryptPasswordEncoder;
+   private  final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public UserResponseDto createUser(UserRequestDto dto) {
 
