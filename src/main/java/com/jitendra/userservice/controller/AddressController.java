@@ -31,6 +31,11 @@ public class AddressController {
         return ResponseEntity.ok(addressService.getUserAddresses(userId));
     }
 
+    @GetMapping("/internal/users/{userId}")
+    public ResponseEntity<List<AddressDto>> getUserAddressesInternal(@PathVariable Long userId) {
+        System.out.println("userId-----> = " + userId);
+        return ResponseEntity.ok(addressService.getUserAddresses(userId));
+    }
 
     @GetMapping("/users/{userId}/default")
     public ResponseEntity<AddressDto> getDefaultAddress(@PathVariable Long userId) {

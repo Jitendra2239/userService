@@ -1,5 +1,6 @@
 package com.jitendra.userservice.repository;
 
+import com.jitendra.userservice.dto.UserContactDto;
 import com.jitendra.userservice.dto.UserDto;
 import com.jitendra.userservice.model.UserStatus;
 import com.jitendra.userservice.model.Users;
@@ -37,4 +38,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
             "LEFT JOIN FETCH u.addresses")
     List<Users> findAllWithDetails();
 
+
+    @Query("SELECT u.name as name,u.phone as phone FROM Users u WHERE u.id = :userId")
+    UserContactDto findContact(Long userId);
 }

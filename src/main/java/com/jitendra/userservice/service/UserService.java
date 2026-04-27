@@ -2,6 +2,7 @@ package com.jitendra.userservice.service;
 
 
 
+import com.jitendra.userservice.dto.UserContactDto;
 import com.jitendra.userservice.dto.UserDto;
 import com.jitendra.userservice.dto.UserRequestDto;
 import com.jitendra.userservice.dto.UserResponseDto;
@@ -23,4 +24,5 @@ public interface UserService {
     public UserResponseDto assignRole(Long userId, String roleName);
     public void deleteUser(Long id);
     public UserDto findByEmail(String email);
+    public UserContactDto findContact(Long id);
 }

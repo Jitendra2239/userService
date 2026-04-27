@@ -21,7 +21,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/users/register").permitAll() // only public APIs
+                        .requestMatchers("/api/v1/users/register","/api/v1/addresses/internal/users/**","/api/v1/users/internal/**").permitAll() // only public APIs
                         .anyRequest().authenticated()              // 🔥 protect everything else
                 )
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)

@@ -1,5 +1,6 @@
 package com.jitendra.userservice.controller;
 
+import com.jitendra.userservice.dto.UserContactDto;
 import com.jitendra.userservice.dto.UserDto;
 import com.jitendra.userservice.dto.UserRequestDto;
 import com.jitendra.userservice.dto.UserResponseDto;
@@ -31,6 +32,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+
+    @GetMapping("/internal/{id}")
+    public ResponseEntity<UserContactDto> getUserInternal(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findContact(id));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

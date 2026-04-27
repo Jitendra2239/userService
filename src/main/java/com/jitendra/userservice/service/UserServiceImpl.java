@@ -121,7 +121,12 @@ public class UserServiceImpl implements UserService {
 
         return UserMapper.toDto(user);
     }
+    @Override
+    @Transactional(readOnly = true)
+    public UserContactDto findContact(Long id) {
 
+     return  userRepository.findContact(id);
+    }
 
     @Override
     public List<UserResponseDto> getAllUsers() {
